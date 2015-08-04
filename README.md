@@ -33,14 +33,22 @@ You can also mount a cetificate chain file with the name of **ca.crt** under the
 ##EXAMPLES##
 
 - check the image bash
-```sh
+```
 docker run -it ctuncsik/camp
 ```
 - check if apache is working
-```sh
+```
 docker run -it -p 80:80 ctuncsik/camp
 ```
 - serve a site through SSL with volumes
-```sh
+```
 docker run -it -p 443:443 -v /path/to/ssl/:/etc/ssl/ -v /path/to/site/:/var/www/ ctuncsik/camp
 ```
+
+##License##
+
+Copyright © 2015 Csaba Tuncsik <csaba.tuncsik@gmail.com>
+
+This work is free. You can redistribute it and/or modify it under the
+terms of the Do What The Fuck You Want To Public License, Version 2,
+as published by Sam Hocevar. See [WTFPL](http://www.wtfpl.net) ![WTFPL icon](http://i.imgur.com/AsWaQQl.png) for more details.
