@@ -34,15 +34,15 @@ You can also mount a cetificate chain file with the name of **ca.crt** under the
 
 - check the image bash
 ```
-docker run -it ctuncsik/camp
+docker run -it cstuncsik/camp bash
 ```
 - check if apache is working
 ```
-docker run -it -p 80:80 ctuncsik/camp
+docker run -it -p 80:80 cstuncsik/camp
 ```
 - serve a site through SSL with volumes
 ```
-docker run -it -p 443:443 -v /path/to/ssl/:/etc/ssl/ -v /path/to/site/:/var/www/ ctuncsik/camp
+docker run -it -p 443:443 -v /path/to/ssl/:/etc/ssl/ -v /path/to/site/:/var/www/ cstuncsik/camp
 ```
 
 ##License##
