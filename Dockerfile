@@ -126,7 +126,6 @@ RUN cd /usr/src && \
         --with-readline \
         --with-regex=php \
         --with-sqlite3=/usr \
-        --with-xpm \
         --with-xsl \
         --with-zlib \
         --with-zlib-dir=/usr && \
@@ -141,17 +140,20 @@ RUN cd /usr/src && \
 # Remove sources
 RUN cd /usr/src && rm -rf mysql* httpd* php*
 
-# Modify apache default httpd conf to load extra confs
-RUN sed -i \
-    -e '/httpd-default.conf/s/#//' \
-    -e '/httpd-vhosts.conf/s/#//' \
-    -e '/httpd-ssl.conf/s/#//' \
-    /usr/local/apache2/conf/httpd.conf
+# Generate self signed cert for localhost for development purposes
+RUN cd /usr/local/apache2/conf && \
+    openssl req -newkey rsa:2048 -days 365 -nodes -x509 \
+    -subj "/C=--/ST=State/L=City/O=Server/OU=IT/CN=localhost" \
+    -keyout server.key \
+    -out server.crt
 
-# Copy apache extra confs
-COPY apache/* /usr/local/apache2/conf/extra/
+# Modify apache default httpd conf to load default extra conf
+RUN sed -i -e '/httpd-default.conf/s/#//' /usr/local/apache2/conf/httpd.conf
 
-# Set apache user
+# Copy apache extra confs but enabling them only if they are needed (in entrypoint)
+COPY apache/conf/extra/* /usr/local/apache2/conf/extra/
+
+# Set apache user and custom folders for mounting
 RUN groupadd www && \
     useradd -G www -r apache && \
     chown -R apache:www /usr/local/apache2 && \
@@ -159,11 +161,8 @@ RUN groupadd www && \
     chown -R apache:www /var/www && \
     chmod -R 775 /var/www
 
-# Copy some test files in web root to check if it is working (index.html, phpinfo.php)
-COPY www/* /var/www/
-
-COPY bin/ /bin
-RUN chmod +x /bin/start-server.sh
-CMD /bin/start-server.sh
+COPY bin/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+CMD ./entrypoint.sh
 
 EXPOSE 80 443
