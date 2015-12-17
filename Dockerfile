@@ -147,11 +147,11 @@ RUN cd /usr/local/apache2/conf && \
     -keyout server.key \
     -out server.crt
 
+# Copy apache extra confs but enabling SSL only if it is needed (in entrypoint)
+COPY apache/conf/extra/* /usr/local/apache2/conf/extra/
+
 # Modify apache default httpd conf to load default extra conf
 RUN sed -i -e '/httpd-default.conf/s/#//' /usr/local/apache2/conf/httpd.conf
-
-# Copy apache extra confs but enabling them only if they are needed (in entrypoint)
-COPY apache/conf/extra/* /usr/local/apache2/conf/extra/
 
 # Set apache user and custom folders for mounting
 RUN groupadd www && \
